@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +14,13 @@ import org.xml.sax.SAXException;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.HttpUnitOptions;
 import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebLink;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 public class HttpUnitTest {
+	private WebConversation wc = null;
+	private final String webLink = "http://sse.tongji.edu.cn/zhaoqinpei/";
 
 	@Before
 	public void setUp() throws Exception {
@@ -26,9 +30,9 @@ public class HttpUnitTest {
 
 	@Test
 	public void testResponce() {
-		WebConversation wc =  new WebConversation();
+		wc =  new WebConversation();
 //		WebRequest wr = new GetMethodWebRequest("http://www.baidu.com/");
-		WebRequest wr = new GetMethodWebRequest("http://waimai.tzwm.me/");
+		WebRequest wr = new GetMethodWebRequest(webLink);
 		WebResponse wrps =null;
 		try {
 			 wrps= wc.getResponse(wr);
@@ -67,8 +71,27 @@ public class HttpUnitTest {
 	}
 	
 	@Test
-	public void test() {
-//		fail("Not yet implemented");
+	public void testLinkClick() {
+		if (wc == null) {
+			wc = new WebConversation();
+		}
+		try {
+			WebResponse wrps = wc.getResource(new GetMethodWebRequest(webLink));
+			WebLink wLink = wrps.getLinkWith("Study and Teaching");
+			WebResponse wResponse = wLink.click();
+			
+			String htmlContent = wResponse.getText();
+			OutputStream oStream = new FileOutputStream("Study and Teaching.html");
+			oStream.write(htmlContent.getBytes("UTF-8"));
+			
+			System.out.println("\nText:\n"+htmlContent);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			System.out.println("Link get exception...");
+			e.printStackTrace();
+		}
+		
 	}
 
 }

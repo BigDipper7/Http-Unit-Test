@@ -18,3 +18,4 @@ is encoded by `UTF-8`
     - java.io写文件在linux中出现中文乱码之解决:http://yangfei520.blog.51cto.com/1041581/551057
     - 做页面抓取，本地文件都可以抓，但是一抓别的就报错:http://bbs.csdn.net/topics/390719480
     - [Config] jar(Http Unit Dependency) downloads:http://www.filewatcher.com/b/ftp/ftp2.slac.stanford.edu/glast.u05/tog/Together6.0.1/lib-0.html
+    - [Config] Understanding HttpUnit's dependencies:http://httpunit.sourceforge.net/doc/manual/installing.html

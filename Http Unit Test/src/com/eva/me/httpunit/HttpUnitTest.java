@@ -21,11 +21,12 @@ import com.meterware.httpunit.WebResponse;
 public class HttpUnitTest {
 	private WebConversation wc = null;
 	private final String webLink = "http://sse.tongji.edu.cn/zhaoqinpei/";
+	private final String charSet = "gb2312";
 
 	@Before
 	public void setUp() throws Exception {
 		HttpUnitOptions.setScriptingEnabled(false);
-		HttpUnitOptions.setDefaultCharacterSet("UTF-8");//解决中文乱码问题，设定获得的html的格式是utf-8
+		HttpUnitOptions.setDefaultCharacterSet(charSet);//解决中文乱码问题，设定获得的html的格式是utf-8
 	}
 
 	@Test
@@ -52,7 +53,7 @@ public class HttpUnitTest {
 		
 			String text = wrps.getText();
 			System.out.println("text: \n"+text);
-			fOutputStream.write(text.getBytes("UTF-8"));//解决中文乱码问题，解决显示问题，要求存进文件的时候存入格式是utf-8
+			fOutputStream.write(text.getBytes(charSet));//解决中文乱码问题，解决显示问题，要求存进文件的时候存入格式是utf-8
 			fOutputStream.flush();
 			
 		} catch (IOException e) {
@@ -75,14 +76,16 @@ public class HttpUnitTest {
 		if (wc == null) {
 			wc = new WebConversation();
 		}
+		OutputStream oStream = null;
 		try {
 			WebResponse wrps = wc.getResource(new GetMethodWebRequest(webLink));
 			WebLink wLink = wrps.getLinkWith("Study and Teaching");
 			WebResponse wResponse = wLink.click();
 			
 			String htmlContent = wResponse.getText();
-			OutputStream oStream = new FileOutputStream("Study and Teaching.html");
-			oStream.write(htmlContent.getBytes("UTF-8"));
+			oStream = new FileOutputStream("Study and Teaching.html");
+			oStream.write(htmlContent.getBytes(charSet));
+			oStream.flush();
 			
 			System.out.println("\nText:\n"+htmlContent);
 		} catch (IOException e) {
@@ -90,6 +93,14 @@ public class HttpUnitTest {
 		} catch (SAXException e) {
 			System.out.println("Link get exception...");
 			e.printStackTrace();
+		} finally {
+			if (oStream !=null) {
+				try {
+					oStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}
